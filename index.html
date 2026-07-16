@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yapp — Appearance</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand"><span class="topbar-logo">yapp</span><span class="topbar-crumb">Settings / Appearance</span></div>
+  <div class="topbar-actions">
+    <button class="btn btn-surface" id="resetBtnTop">Reset to default</button>
+    <button class="btn btn-primary-fill" id="saveBtnTop">Save changes</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar" aria-label="Appearance controls">
+
+    <div class="sidebar-scroll">
+
+      <p class="sidebar-lede">Pick three colors. Every button, card, and label on your profile updates from them automatically.</p>
+
+      <!-- token teacher banner, used by bonus interactions -->
+      <div class="token-teacher" id="tokenTeacher" hidden>
+        <span class="token-teacher-dot" id="tokenTeacherDot"></span>
+        <span id="tokenTeacherText">This element reads the <b>Primary</b> token.</span>
+        <button class="token-teacher-close" id="tokenTeacherClose" aria-label="Dismiss">×</button>
+      </div>
+
+      <!-- THEME -->
+      <section class="panel-section">
+        <h3 class="panel-title">Theme</h3>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-card" data-theme="default" type="button">
+            <span class="theme-swatch" data-theme-swatch="default"></span>
+            <span class="theme-name">Default</span>
+          </button>
+          <button class="theme-card" data-theme="sunset" type="button">
+            <span class="theme-swatch" data-theme-swatch="sunset"></span>
+            <span class="theme-name">Sunset</span>
+          </button>
+          <button class="theme-card" data-theme="ocean" type="button">
+            <span class="theme-swatch" data-theme-swatch="ocean"></span>
+            <span class="theme-name">Ocean</span>
+          </button>
+          <button class="theme-card" data-theme="forest" type="button">
+            <span class="theme-swatch" data-theme-swatch="forest"></span>
+            <span class="theme-name">Forest</span>
+          </button>
+          <button class="theme-card" data-theme="midnight" type="button">
+            <span class="theme-swatch" data-theme-swatch="midnight"></span>
+            <span class="theme-name">Midnight</span>
+          </button>
+          <button class="theme-card" data-theme="custom" type="button" id="customThemeCard">
+            <span class="theme-swatch theme-swatch-custom">✎</span>
+            <span class="theme-name">Custom</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- COLORS -->
+      <section class="panel-section" id="colors-section">
+        <h3 class="panel-title">Colors</h3>
+
+        <div class="color-row" id="row-background" data-token="background">
+          <div class="color-row-main">
+            <label for="input-background">Background</label>
+            <span class="hex-badge" id="hex-background">#FFFFFF</span>
+          </div>
+          <div class="color-row-swatch">
+            <input type="color" id="input-background" value="#ffffff" />
+          </div>
+        </div>
+
+        <div class="color-row" id="row-primary" data-token="primary">
+          <div class="color-row-main">
+            <label for="input-primary">Primary</label>
+            <span class="hex-badge" id="hex-primary">#6D3EF5</span>
+          </div>
+          <div class="color-row-swatch">
+            <input type="color" id="input-primary" value="#6d3ef5" />
+          </div>
+        </div>
+
+        <div class="color-row" id="row-secondary" data-token="secondary">
+          <div class="color-row-main">
+            <label for="input-secondary">Secondary</label>
+            <span class="hex-badge" id="hex-secondary">#B56CFF</span>
+          </div>
+          <div class="color-row-swatch">
+            <input type="color" id="input-secondary" value="#b56cff" />
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="autoTextToggle" checked />
+          <span>Auto Text Color</span>
+        </label>
+        <p class="hint">
+          Dark background&nbsp;→&nbsp;white text. Light background&nbsp;→&nbsp;black text. Computed automatically, on every card.
+        </p>
+      </section>
+
+      <!-- BANNER (opened by clicking the preview banner) -->
+      <section class="panel-section" id="bannerSection" data-token="banner">
+        <h3 class="panel-title">Banner</h3>
+        <div class="segmented" id="bannerStyleToggle">
+          <button class="segmented-opt is-active" data-banner-style="gradient" type="button">Gradient</button>
+          <button class="segmented-opt" data-banner-style="solid" type="button">Solid</button>
+        </div>
+        <p class="hint">Gradient blends Primary → Secondary. Solid falls back to your Background color.</p>
+      </section>
+
+      <!-- token legend -->
+      <section class="panel-section">
+        <h3 class="panel-title">How tokens map</h3>
+        <ul class="legend">
+          <li><span class="legend-dot" style="background:var(--primary)"></span>Primary — money actions: Tip, Subscribe, Unlock</li>
+          <li><span class="legend-dot" style="background:var(--secondary)"></span>Secondary — Follow, accents, gradients</li>
+          <li><span class="legend-dot legend-dot-bg" style="background:var(--background)"></span>Background — page, cards, surfaces</li>
+          <li><span class="legend-dot" style="background:var(--text)"></span>Auto — every text &amp; icon color</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-surface" id="resetBtn">Reset to default</button>
+      <button class="btn btn-primary-fill" id="saveBtn">Save changes</button>
+    </div>
+  </aside>
+
+  <!-- ============ PREVIEW ============ -->
+  <main class="preview-wrap">
+    <div class="preview-frame">
+      <div class="preview-frame-label">Live preview — click things to see which token they use</div>
+
+      <div class="preview" id="preview">
+
+        <!-- 4.1 Identity & header -->
+        <div class="banner" id="bannerEl" title="Click to edit banner">
+          <svg class="banner-deco" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true">
+            <circle cx="700" cy="40" r="34" fill="rgba(255,255,255,.35)"/>
+            <circle cx="700" cy="40" r="14" fill="var(--secondary)"/>
+            <path d="M40 170 q18 -22 36 0 t36 0" stroke="rgba(255,255,255,.55)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M60 40 q18 -22 36 0 t36 0" stroke="rgba(255,255,255,.4)" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M600 150 a20 20 0 1 0 0.1 0" fill="rgba(255,255,255,.3)"/>
+            <polygon points="740,150 780,175 740,200" fill="rgba(255,255,255,.28)"/>
+            <path d="M330 20 a26 26 0 0 1 -3 24 a26 26 0 0 1 3 -24 a26 26 0 0 1 24 3 a26 26 0 0 1 -24 -3 a26 26 0 0 1 -3 -24 a26 26 0 0 1 3 24z" fill="rgba(255,255,255,.5)"/>
+          </svg>
+          <div class="banner-topbar">
+            <button class="btn btn-surface btn-sm" data-action="back" type="button">← Back</button>
+            <button class="btn btn-surface btn-sm" data-action="share" type="button">Share ↑</button>
+          </div>
+          <span class="banner-edit-hint">Click banner to edit</span>
+        </div>
+
+        <div class="profile-header">
+          <div class="avatar" id="avatarEl">TL</div>
+
+          <div class="identity-row">
+            <div class="identity-text">
+              <h1 class="display-name">theresalearns <span class="verified-badge" title="Verified">✓</span></h1>
+              <p class="handle">Tech &amp; AI · 304k followers</p>
+              <p class="bio">Literasi teknologi dan finansial — breaking down AI tools and money habits, one post at a time.</p>
+              <div class="social-icons">
+                <span class="social-icon">𝕏</span>
+                <span class="social-icon">◎</span>
+                <span class="social-icon">▶</span>
+                <span class="social-icon">🌐</span>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-primary-fill" data-action="subscribe" type="button">Subscribe</button>
+              <button class="btn btn-primary-outline" data-action="dm" type="button">Direct Message</button>
+              <button class="btn btn-secondary-outline" data-action="follow" type="button">Follow</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.3 Tabs -->
+        <nav class="tabs" id="tabs">
+          <button class="tab is-active" data-tab="links" type="button">🔗 Links</button>
+          <button class="tab" data-tab="feeds" type="button">🗒 Feeds</button>
+          <button class="tab" data-tab="shop" type="button">🛍 Shop</button>
+          <button class="tab" data-tab="support" type="button">♥ Support</button>
+        </nav>
+
+        <div class="tab-panels">
+
+          <!-- LINKS -->
+          <section class="tab-panel is-active" data-panel="links">
+            <a class="link-btn" href="#">🌐 <span>Google</span></a>
+            <a class="link-btn" href="#">📷 <span>Instagram</span></a>
+            <a class="link-btn" href="#">🎨 <span>Portfolio</span></a>
+            <a class="link-btn" href="#">▶️ <span>Youtube</span></a>
+          </section>
+
+          <!-- FEEDS -->
+          <section class="tab-panel" data-panel="feeds">
+            <div class="feed-filter">
+              <button class="pill pill-active" type="button">All Feeds</button>
+              <button class="pill pill-gradient" type="button">✨ Exclusive Only</button>
+            </div>
+
+            <article class="feed-card">
+              <div class="feed-card-head">
+                <span class="feed-avatar">TL</span>
+                <div>
+                  <p class="feed-author">theresalearns <span class="tiny-dot">· 8h</span></p>
+                </div>
+              </div>
+              <p class="feed-text">New AI tool dropped this week that cut my editing time in half — full breakdown in today's post.</p>
+              <div class="feed-actions"><span>♡ 214</span><span>💬 32</span></div>
+            </article>
+
+            <article class="feed-card feed-card-exclusive">
+              <div class="feed-lock-badge">🔒 Exclusive</div>
+              <div class="feed-card-head">
+                <span class="feed-avatar">TL</span>
+                <div>
+                  <p class="feed-author">theresalearns <span class="tiny-dot">· 1d</span></p>
+                </div>
+              </div>
+              <p class="feed-text feed-text-blurred">The full walkthrough of my portfolio rebalance this quarter, plus the three apps I use to track it...</p>
+              <button class="btn btn-primary-fill btn-sm" data-action="unlock" type="button">Unlock Post</button>
+            </article>
+          </section>
+
+          <!-- SHOP -->
+          <section class="tab-panel" data-panel="shop">
+            <div class="shop-grid">
+              <div class="shop-card"><div class="shop-thumb"></div><p>1:1 Career Call</p><span class="shop-price">Rp150.000</span></div>
+              <div class="shop-card"><div class="shop-thumb"></div><p>AI Prompt Pack</p><span class="shop-price">Rp35.000</span></div>
+            </div>
+          </section>
+
+          <!-- SUPPORT -->
+          <section class="tab-panel" data-panel="support">
+            <div class="support-widget">
+              <div class="support-widget-head">Support theresalearns</div>
+              <div class="support-widget-body">
+                <div class="segmented segmented-inline">
+                  <button class="segmented-opt is-active" type="button">IDR</button>
+                  <button class="segmented-opt" type="button">USDT</button>
+                </div>
+                <div class="amount-input">Input tip amount here…</div>
+                <div class="chip-row">
+                  <button class="chip" type="button">Rp20.000</button>
+                  <button class="chip" type="button">Rp50.000</button>
+                  <button class="chip chip-selected" type="button">Rp100.000</button>
+                </div>
+                <button class="btn btn-primary-fill btn-block" data-action="tip" type="button">Send Tip</button>
+              </div>
+            </div>
+
+            <div class="membership-card">
+              <div class="membership-head">👑 Membership <span class="show-more">Show more ›</span></div>
+              <div class="tier-card">
+                <span class="tier-avatar">TL</span>
+                <div class="tier-info">
+                  <p class="tier-name">Theresa's Inner Circle</p>
+                  <p class="tier-price">IDR 50.000 <span>/month</span></p>
+                </div>
+                <button class="btn btn-primary-fill btn-sm" data-action="join" type="button">Join</button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- 4.8 sticky monetization bar -->
+        <div class="sticky-bar" id="stickyBar">
+          <span>🔒 Unlock all exclusive posts this month</span>
+          <button class="btn btn-sticky" data-action="unlock-bar" type="button">Unlock now</button>
+        </div>
+
+        <!-- 4.9 platform chrome mock -->
+        <nav class="mobile-nav" aria-hidden="true">
+          <span>◱<em>Feeds</em></span>
+          <span>💬<em>Messages</em></span>
+          <span>◎<em>Explore</em></span>
+          <span>▤<em>Library</em></span>
+          <span class="mobile-nav-active">☺<em>Profile</em></span>
+        </nav>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="save-toast" id="saveToast">Saved ✓</div>
+
+<script src="script.js"></script>
+</body>
+</html>
