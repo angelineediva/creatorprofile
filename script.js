@@ -114,7 +114,25 @@
     hexPrimary: document.getElementById("hex-primary"),
     hexSecondary: document.getElementById("hex-secondary"),
     autoText: document.getElementById("autoTextToggle"),
+    contrastWarning: document.getElementById("contrastWarning"),
+    contrastWarningText: document.getElementById("contrastWarningText"),
   };
+
+  // WCAG "large text/icon" threshold (per spec: ≥3:1). Warn-only — never
+  // blocks Save (2026-07-21 decision).
+  const MIN_LARGE_TEXT_CONTRAST = 3;
+
+  function updateContrastWarning(s) {
+    const lowPrimary = contrastRatio(s.background, s.primary) < MIN_LARGE_TEXT_CONTRAST;
+    const lowSecondary = contrastRatio(s.background, s.secondary) < MIN_LARGE_TEXT_CONTRAST;
+    if (!lowPrimary && !lowSecondary) {
+      els.contrastWarning.hidden = true;
+      return;
+    }
+    const which = lowPrimary && lowSecondary ? "Primary and Secondary are" : lowPrimary ? "Primary is" : "Secondary is";
+    els.contrastWarningText.textContent = `Low contrast: ${which} hard to see against your Background. You can still save.`;
+    els.contrastWarning.hidden = false;
+  }
 
   function render() {
     const derived = computeDerivedTokens(state);
@@ -146,6 +164,8 @@
     document.querySelectorAll("#bannerStyleToggle .segmented-opt").forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.bannerStyle === state.bannerStyle);
     });
+
+    updateContrastWarning(state);
   }
 
   // initialize the little conic-gradient swatches on each theme card from
@@ -287,6 +307,21 @@
       return;
     }
 
+    // 1b. Link buttons (Links tab) → Secondary/Accent (2026-07-21 decision)
+    const linkBtn = e.target.closest(".link-btn");
+    if (linkBtn) {
+      e.preventDefault();
+      highlightRow("row-secondary");
+      teach("var(--secondary)", "<b>Link buttons</b> read the <b>Secondary (Accent)</b> token, outlined.");
+      return;
+    }
+
+    // 1c. Avatar → fixed, not a creator token at all
+    if (e.target.closest("#avatarEl")) {
+      teach("var(--yapp-fixed)", "The <b>avatar fallback</b> is a fixed, per-user color (hash-generated from the user's ID) — it never reads your Background/Primary/Secondary.");
+      return;
+    }
+
     const actionEl = e.target.closest("[data-action]");
     if (!actionEl) {
       // clicking empty preview chrome = the Background token
@@ -303,7 +338,7 @@
       teach("var(--primary)", `<b>${actionEl.textContent.trim()}</b> is a money action — it always reads the <b>Primary</b> token, filled.`);
     } else if (action === "follow") {
       highlightRow("row-secondary");
-      teach("var(--secondary)", "<b>Follow</b> reads the <b>Secondary</b> token, outlined — kept quieter than Primary on purpose.");
+      teach("var(--secondary)", "<b>Follow</b> reads the <b>Secondary (Accent)</b> token, outlined — kept quieter than Primary on purpose.");
     } else if (action === "dm") {
       highlightRow("row-primary");
       teach("var(--primary)", "<b>Direct Message</b> reads <b>Primary</b> too, but at outline emphasis — a supporting action, not the main one.");

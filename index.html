@@ -89,7 +89,7 @@
 
         <div class="color-row" id="row-secondary" data-token="secondary">
           <div class="color-row-main">
-            <label for="input-secondary">Secondary</label>
+            <label for="input-secondary">Secondary (Accent)</label>
             <span class="hex-badge" id="hex-secondary">#B56CFF</span>
           </div>
           <div class="color-row-swatch">
@@ -104,6 +104,12 @@
         <p class="hint">
           Dark background&nbsp;→&nbsp;white text. Light background&nbsp;→&nbsp;black text. Computed automatically, on every card.
         </p>
+
+        <!-- warn-only contrast check (2026-07-21 decision): never blocks Save -->
+        <div class="contrast-warning" id="contrastWarning" hidden>
+          <span class="contrast-warning-icon">⚠️</span>
+          <span id="contrastWarningText">Low contrast between two of your colors — some text or icons may be hard to read. You can still save.</span>
+        </div>
       </section>
 
       <!-- BANNER (opened by clicking the preview banner) -->
@@ -120,10 +126,11 @@
       <section class="panel-section">
         <h3 class="panel-title">How tokens map</h3>
         <ul class="legend">
-          <li><span class="legend-dot" style="background:var(--primary)"></span>Primary — money actions: Tip, Subscribe, Unlock</li>
-          <li><span class="legend-dot" style="background:var(--secondary)"></span>Secondary — Follow, accents, gradients</li>
+          <li><span class="legend-dot" style="background:var(--primary)"></span>Primary — money actions: Tip, Subscribe, Unlock, Join</li>
+          <li><span class="legend-dot" style="background:var(--secondary)"></span>Accent (Secondary) — Follow, Link buttons, badge selected states, active tab underline</li>
           <li><span class="legend-dot legend-dot-bg" style="background:var(--background)"></span>Background — page, cards, surfaces</li>
           <li><span class="legend-dot" style="background:var(--text)"></span>Auto — every text &amp; icon color</li>
+          <li><span class="legend-dot" style="background:var(--yapp-fixed)"></span>Fixed — verified badge, lock badge, active nav icon, avatar fallback (never affected by your colors)</li>
         </ul>
       </section>
 

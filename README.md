@@ -26,11 +26,21 @@ raw hex; every rule reads `var(--token)`.
 | Token | Who sets it | What reads it |
 |---|---|---|
 | `--background` | Creator | Page background, cards, surfaces (via derived `--surface`) |
-| `--primary` | Creator | Send Tip, Subscribe, Unlock, Join, Direct Message (outline), link buttons (outline), active tab |
-| `--secondary` | Creator | Follow (outline), gradients (banner, exclusive filter, sticky bar) |
+| `--primary` | Creator | Send Tip, Subscribe, Unlock, Join, Direct Message (outline), active tab text, gradients (banner, exclusive filter, sticky bar, support widget) |
+| `--secondary` (Accent) | Creator | Follow (outline), **link buttons** (outline), tab **active-underline**, chip **selected/hover** state |
 | `--text` / `--text-secondary` | Auto (system) | All copy and icons — computed for contrast against `--background` |
 | `--surface` / `--border` | Auto (system) | Cards, dividers, inputs, Share/Back buttons |
 | `--yapp-fixed` | Fixed brand | Verified badge, exclusive-post lock badge, active nav icon — never affected by creator colors |
+| `--yapp-avatar-fallback` | Fixed, per-user | Avatar initials circle (main profile, feed post author, membership tier) — hash-generated per user in the real app, never Primary/Secondary |
+
+**Decided 2026-07-21** (updates to the original spec, reflected in the code above):
+- Link buttons moved from Primary → **Secondary/Accent**.
+- Tab active-underline moved from Primary → **Secondary/Accent** (the active tab's *text* color stays Primary — only the underline bar changed).
+- Tag/badge hover-or-selected states → **Secondary/Accent**. This prototype's closest match is the amount-selector **chip** in the Support widget (`chip-selected`, `chip:hover`); there's no literal category-tag component in this simplified build.
+- Analytics/chart highlight color is explicitly **out of scope** — not modeled here, and not Accent-driven if it's ever added.
+- Avatar fallback (the initials circle) is a **fixed, hash-generated-per-user color** — not a creator token. This static demo only ever renders one user's initials ("TL"), so `--yapp-avatar-fallback` is hardcoded to one representative pink-orange gradient rather than actually hashing anything.
+- Verified-badge tint is confirmed **fixed system color** (already implemented correctly pre-2026-07-21 via `--yapp-fixed`; no code change needed).
+- Contrast enforcement is **warn-only**: the sidebar shows a non-blocking warning (`#contrastWarning`) when Primary or Secondary drops below a 3:1 contrast ratio against Background, but Save is never disabled.
 
 Auto-contrast uses the real WCAG relative-luminance formula and picks
 whichever of black/white clears a higher contrast ratio against the
@@ -51,8 +61,10 @@ they're wired to, then highlights that control:
 
 - **Banner** → opens the Banner section (Gradient vs. Solid)
 - **Send Tip / Subscribe / Unlock / Join** → highlights **Primary**
-- **Follow** → highlights **Secondary**
+- **Follow** → highlights **Secondary (Accent)**
+- **Link buttons** (Links tab) → highlights **Secondary (Accent)**
 - **Direct Message** → highlights **Primary** (called out as outline, not filled)
+- **Avatar** → explains it's a **fixed, per-user color**, not a creator token
 - **Share / Back** → explains these are neutral **Surface**, not brand color
 - Empty page background → highlights **Background**
 

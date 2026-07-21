@@ -25,6 +25,11 @@
   --yapp-fixed: #6D3EF5;
   --yapp-ink: #0f0d15;
   --yapp-success: #16A34A;
+  /* Avatar fallback (initials circle): hash-generated per user in the real
+     app, never the creator's Primary/Secondary. This static demo only ever
+     shows one user's initials ("TL"), so we hardcode the one gradient that
+     user's hash would resolve to — swap per-instance in a real build. */
+  --yapp-avatar-fallback: linear-gradient(135deg, #FF6B6B, #FFA94D);
 
   --radius-lg: 20px;
   --radius-md: 14px;
@@ -181,6 +186,15 @@ img{max-width:100%;display:block}
 }
 .sidebar-footer .btn{flex:1}
 
+/* contrast warning — warn-only, never blocks Save (2026-07-21 decision) */
+.contrast-warning{
+  display:flex;align-items:flex-start;gap:8px;
+  background:#fff8ec;border:1px solid #f3cf8a;color:#7a4a06;
+  border-radius:var(--radius-md);padding:10px 12px;margin-top:12px;
+  font-size:12px;line-height:1.45;
+}
+.contrast-warning-icon{flex:none;font-size:13px;line-height:1.4}
+
 /* ==========================================================================
    BUTTONS — five emphasis styles, bound only to tokens
    ========================================================================== */
@@ -260,10 +274,12 @@ img{max-width:100%;display:block}
 .banner:hover .banner-edit-hint{opacity:1}
 
 .profile-header{padding:0 28px 20px}
+/* Avatar fallback: fixed, hash-generated per user — never the creator's
+   Primary/Secondary (2026-07-21 decision). */
 .avatar{
   width:96px;height:96px;border-radius:50%;
   margin-top:-48px;border:4px solid var(--background);
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  background:var(--yapp-avatar-fallback);
   color:#fff;display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:26px;
   box-shadow:var(--shadow-soft);
@@ -298,24 +314,26 @@ img{max-width:100%;display:block}
 }
 .tab.is-active{color:var(--primary)}
 .tab.is-active::after{
+  /* Tab active-underline reads Secondary/Accent, not Primary (2026-07-21 decision) */
   content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2.5px;
-  background:var(--primary);border-radius:2px;
+  background:var(--secondary);border-radius:2px;
 }
 .tab-panel{display:none;padding:20px 28px 32px;animation:fadeUp .25s var(--ease)}
 .tab-panel.is-active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ---------- 4.4 links ---------- */
+/* Link buttons read Secondary/Accent, not Primary (2026-07-21 decision) */
 .link-btn{
   display:flex;align-items:center;gap:10px;
-  border:2px solid var(--primary);color:var(--text);
+  border:2px solid var(--secondary);color:var(--text);
   background:transparent;text-decoration:none;
   border-radius:var(--radius-pill);
   padding:14px 18px;margin-bottom:10px;
   font-size:14px;font-weight:600;
   transition:background .2s var(--ease),transform .16s var(--ease);
 }
-.link-btn:hover{background:rgba(109,62,245,.06);transform:translateY(-1px)}
+.link-btn:hover{background:color-mix(in srgb, var(--secondary) 8%, transparent);transform:translateY(-1px)}
 
 /* ---------- 4.5 feeds ---------- */
 .feed-filter{display:flex;gap:8px;margin-bottom:16px}
@@ -330,9 +348,10 @@ img{max-width:100%;display:block}
 }
 .feed-card:hover{box-shadow:0 8px 20px -12px rgba(0,0,0,.25);transform:translateY(-1px)}
 .feed-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+/* Avatar fallback: fixed, hash-generated per user — never Primary/Secondary */
 .feed-avatar{
   width:34px;height:34px;border-radius:50%;flex:none;
-  background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;
+  background:var(--yapp-avatar-fallback);color:#fff;display:flex;align-items:center;justify-content:center;
   font-size:12px;font-weight:800;
 }
 .feed-author{font-size:13.5px;font-weight:700}
@@ -371,15 +390,19 @@ img{max-width:100%;display:block}
   border-radius:var(--radius-pill);padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;
   transition:background .18s var(--ease),color .18s var(--ease);
 }
-.chip:hover{background:rgba(109,62,245,.06)}
-.chip-selected{background:var(--primary);color:#fff}
+.chip:hover{background:color-mix(in srgb, var(--secondary) 8%, transparent)}
+/* Chip = closest thing to a "tag/badge" in this prototype; its selected
+   state reads Secondary/Accent per the 2026-07-21 decision on badge
+   hover/selected states. Resting (unselected) chip stays Primary-outlined. */
+.chip-selected{background:var(--secondary);color:#fff}
 
 /* ---------- 4.7 membership ---------- */
 .membership-card{background:var(--surface);border-radius:var(--radius-lg);padding:18px}
 .membership-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14.5px;color:var(--primary);margin-bottom:14px}
 .show-more{font-size:12px;font-weight:700;color:var(--primary);cursor:pointer;border:2px solid var(--primary);padding:6px 12px;border-radius:var(--radius-pill)}
 .tier-card{display:flex;align-items:center;gap:12px;background:var(--background);border-radius:var(--radius-md);padding:12px;border:1px solid var(--border)}
-.tier-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex:none}
+/* Avatar fallback: fixed, hash-generated per user — never Primary/Secondary */
+.tier-avatar{width:38px;height:38px;border-radius:50%;background:var(--yapp-avatar-fallback);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex:none}
 .tier-info{flex:1}
 .tier-name{font-size:13.5px;font-weight:700}
 .tier-price{font-size:12.5px;color:var(--text-secondary);margin-top:2px}
