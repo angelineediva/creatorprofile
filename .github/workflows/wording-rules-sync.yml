@@ -1,0 +1,51 @@
+name: Wording Rules Auto-Fix
+
+# Runs whenever README.md changes on main. GitBook's Git Sync pulls this
+# file straight into yapp.gitbook.io/yapp-docs, so Claude Code rewrites it
+# in place to comply with WORDING-RULES.md, then commits and pushes the
+# fix back to the same branch before GitBook picks it up.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+
+permissions:
+  contents: write
+
+jobs:
+  enforce-wording:
+    runs-on: ubuntu-latest
+    # Skip commits made by this workflow itself, to avoid triggering a loop.
+    if: "!contains(github.event.head_commit.message, '[skip wording-ci]')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read the wording rules at "WORDING-RULES.md".
+
+            Apply sections 1-4 (voice & tone, terminology, capitalization,
+            formatting conventions) to "README.md", which is about to sync
+            to GitBook. Section 5 (tutorial page structure) does not apply
+            here — README.md is technical/spec documentation, not a
+            tutorial page, so keep its existing structure (headings, tables,
+            code blocks) as-is.
+
+            Rules:
+            - Rewrite the file in place so it complies. Fix wording,
+              terminology, capitalization, and formatting — do not change
+              the underlying meaning, remove information, or alter code
+              blocks/token names.
+            - If the file already complies, leave it untouched.
+            - After editing, run `git add README.md` and commit with
+              exactly this message: "chore: apply wording rules [skip wording-ci]"
+            - Then push the commit to the current branch.
+          claude_args: |
+            --allowedTools "Read,Edit,Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git diff:*),Bash(git status:*)"
+            --max-turns 20
